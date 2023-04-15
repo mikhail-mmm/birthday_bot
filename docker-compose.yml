@@ -1,0 +1,10 @@
+services:
+  birthday_bot_db:
+    container_name: birthday_bot
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=123123
+      - POSTGRES_USER=username
+      - POSTGRES_DB=birthday_bot
+    image: postgres:15.2-alpine
