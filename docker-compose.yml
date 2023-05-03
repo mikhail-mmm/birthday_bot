@@ -8,3 +8,13 @@ services:
       - POSTGRES_USER=username
       - POSTGRES_DB=birthday_bot
     image: postgres:15.2-alpine
+    restart: always
+  birthday_bot_test_db:
+    container_name: test_birthday_bot
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=123321
+      - POSTGRES_USER=username
+      - POSTGRES_DB=test_birthday_bot
+    image: postgres:15.2-alpine

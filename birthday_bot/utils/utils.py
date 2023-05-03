@@ -50,25 +50,27 @@ def create_change_event_markup() -> ReplyKeyboardMarkup:
 
 def is_str_date(input_date_str: str) -> bool:
     try:
-        date_datetime = datetime.strptime(input_date_str, "%d.%m.%Y").date()
-        date_datetime = True
-        return date_datetime
+        datetime.strptime(input_date_str, "%d.%m.%Y").date()
+        return True
     except ValueError:
         return False
 
 
-def create_alert_datetime(alert: str, alert_time: str, birthday_day: int, birthday_month: int) -> datetime:
-    if alert == "День в день":
+def create_alert_date(alert_str: str, birthday_day: int, birthday_month: int) -> date:
+    if alert_str == "День в день":
         delta_date = 0
-    elif alert == "За 1 день":
+    elif alert_str == "За 1 день":
         delta_date = 1
-    elif alert == "За 3 дня":
+    elif alert_str == "За 3 дня":
         delta_date = 3
     else:
         delta_date = 7
-    hour, minute = alert_time.split(":")
-    alert_time = time(int(hour), int(minute))
     event_date = date(date.today().year, birthday_month, birthday_day)
     alert_date = event_date - timedelta(days=delta_date)
-    alert_datetime = datetime.combine(alert_date, alert_time)
-    return alert_datetime
+    return alert_date
+
+
+def create_alert_time(alert_time_str: str) -> time:
+    hour, minute = alert_time_str.split(":")
+    alert_time = time(int(hour), int(minute))
+    return alert_time

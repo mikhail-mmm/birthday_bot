@@ -1,5 +1,5 @@
-from db.config import get_config, get_connection_dsn
-from db.db_model import Base
+from birthday_bot.db.config import get_config, get_connection_dsn
+from birthday_bot.db.models.user_and_event import Base
 
 from sqlalchemy import create_engine, Engine
 from sqlalchemy.orm import Session
