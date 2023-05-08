@@ -33,17 +33,43 @@ def get_db_session(config_test_db):
         session.close()
 
 
+def insert_test_user(session, user):
+    session.add(user)
+    session.commit()
+
+
+def insert_test_event(session, event, user):
+    test_event = Event(
+        birthday_human=event.birthday_human.lower(),
+        birthday_day=event.birthday_day,
+        birthday_month=event.birthday_month,
+        birthday_year=event.birthday_year,
+        alert_date=event.alert_date,
+        alert_time=event.alert_time,
+        user=user,
+    )
+    session.add(test_event)
+    session.commit()
+
+
 def delete_user_from_test_db(session, user):
     session.query(User).where(User.name == user.name).delete()
+    session.commit()
 
 
-def delete_event_from_test_db(session, id):
-    session.query(Event).where(Event.id == id).delete()
+def delete_event_from_test_db(session, event):
+    session.query(Event).where(Event.birthday_human == event.birthday_human).delete()
+    session.commit()
 
 
 def get_user_from_test_db(session, test_user_name):
     user = session.scalars(select(User).where(User.name == test_user_name)).first()
     return user
+
+
+def get_event_from_test_db(session, test_event):
+    event = session.scalars(select(Event).where(Event.birthday_human == test_event.birthday_human)).first()
+    return event
 
 
 def is_event_in_test_db(session, user_id):
@@ -72,3 +98,17 @@ def event(user):
         user=user,
     )
     return event
+
+
+# @pytest.fixture
+# def event_for_changing(user):
+#     event_for_changing = Event(
+#         birthday_human="test_name",
+#         birthday_day=2,
+#         birthday_month=2,
+#         birthday_year=1999,
+#         alert_date=date(1999, 2, 2),
+#         alert_time=time(10, 00),
+#         user=user,
+#     )
+#     return event_for_changing
