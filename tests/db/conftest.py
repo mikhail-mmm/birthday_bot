@@ -38,17 +38,8 @@ def insert_test_user(session, user):
     session.commit()
 
 
-def insert_test_event(session, event, user):
-    test_event = Event(
-        birthday_human=event.birthday_human.lower(),
-        birthday_day=event.birthday_day,
-        birthday_month=event.birthday_month,
-        birthday_year=event.birthday_year,
-        alert_date=event.alert_date,
-        alert_time=event.alert_time,
-        user=user,
-    )
-    session.add(test_event)
+def insert_test_event(session, event):
+    session.add(event)
     session.commit()
 
 
@@ -67,8 +58,8 @@ def get_user_from_test_db(session, test_user_name):
     return user
 
 
-def get_event_from_test_db(session, test_event):
-    event = session.scalars(select(Event).where(Event.birthday_human == test_event.birthday_human)).first()
+def get_event_from_test_db(session, birthday_human):
+    event = session.scalars(select(Event).where(Event.birthday_human == birthday_human)).first()
     return event
 
 
@@ -76,6 +67,7 @@ def is_event_in_test_db(session, user_id):
     event = session.scalar(select(Event).where(Event.user_id == user_id))
     if event:
         return True
+    return False
 
 
 @pytest.fixture

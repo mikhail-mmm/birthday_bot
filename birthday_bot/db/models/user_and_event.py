@@ -1,7 +1,7 @@
 from datetime import date
 
-from sqlalchemy import Column, String, Integer, Date, Time, ForeignKey
-from sqlalchemy.orm import DeclarativeBase, relationship, Mapped
+from sqlalchemy import Column, Date, ForeignKey, Integer, String, Time
+from sqlalchemy.orm import DeclarativeBase, Mapped, relationship
 from sqlalchemy.schema import MetaData
 
 
