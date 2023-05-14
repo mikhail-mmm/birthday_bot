@@ -1,11 +1,9 @@
 from datetime import date, time
+from sqlalchemy import select
+from typing import Optional
 
 from birthday_bot.db.db_creation import connect_db
-from birthday_bot.db.models.user_and_event import User, Event
-
-from sqlalchemy import select
-
-from typing import Optional
+from birthday_bot.db.models.user_and_event import Event, User
 
 DB, SESSION = connect_db()
 

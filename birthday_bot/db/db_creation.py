@@ -1,8 +1,8 @@
+from sqlalchemy import Engine, create_engine
+from sqlalchemy.orm import Session
+
 from birthday_bot.db.config import get_config, get_connection_dsn
 from birthday_bot.db.models.user_and_event import Base
-
-from sqlalchemy import create_engine, Engine
-from sqlalchemy.orm import Session
 
 
 def connect_db() -> tuple[Engine, Session]:

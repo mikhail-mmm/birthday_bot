@@ -1,25 +1,26 @@
 import logging
-import threading
-import time
-
-from birthday_bot.db.utils_db import (insert_user, is_user_in_database, insert_event, delete_event,
-                         get_coming_event, change_birthday_date, change_alert_date,
-                         is_event_in_database, change_alert_time, get_event,
-                         get_events_with_alert_today, get_user,
-                         get_user_id)
-from birthday_bot.db.models.user_and_event import User
-
 import schedule
-
+import sentry_sdk
 from telebot import TeleBot
 from telebot.types import Message, ReplyKeyboardRemove
-
+import threading
+import time
 from typing import Type
 
+from birthday_bot.db.models.user_and_event import User
+from birthday_bot.db.utils_db import (change_alert_date, change_alert_time,
+                                      change_birthday_date, delete_event,
+                                      get_coming_event, get_event,
+                                      get_events_with_alert_today, get_user,
+                                      get_user_id, insert_event, insert_user,
+                                      is_event_in_database,
+                                      is_user_in_database)
 from birthday_bot.utils.settings import API_TOKEN, HELP
-from birthday_bot.utils.utils import (create_main_markup, create_alert_markup, create_time_markup,
-                         is_str_date, create_alert_date, create_alert_time,
-                         create_change_event_markup)
+from birthday_bot.utils.utils import (create_alert_date, create_alert_markup,
+                                      create_alert_time,
+                                      create_change_event_markup,
+                                      create_main_markup, create_time_markup,
+                                      is_str_date)
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO, filename="bot.log"
@@ -27,6 +28,11 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 bot = TeleBot(API_TOKEN)
+
+sentry_sdk.init(
+    dsn="https://0364b814666c409aa2891de7f135e9a4@o4505036422971392.ingest.sentry.io/4505036504432640",
+    traces_sample_rate=1.0,
+)
 
 
 @bot.message_handler(commands=["start"])

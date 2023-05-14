@@ -1,6 +1,17 @@
 services:
-  birthday_bot_db:
-    container_name: birthday_bot
+
+  test_bot_db:
+    container_name: test_bot_db
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=123321
+      - POSTGRES_USER=username
+      - POSTGRES_DB=test_birthday_bot
+    image: postgres:15.2-alpine
+
+  bot_db:
+    container_name: bot_db
     ports:
       - "5432:5432"
     environment:
@@ -9,12 +20,13 @@ services:
       - POSTGRES_DB=birthday_bot
     image: postgres:15.2-alpine
     restart: always
-  birthday_bot_test_db:
-    container_name: test_birthday_bot
-    ports:
-      - "5432:5432"
-    environment:
-      - POSTGRES_PASSWORD=123321
-      - POSTGRES_USER=username
-      - POSTGRES_DB=test_birthday_bot
-    image: postgres:15.2-alpine
+
+  birthday_bot:
+    container_name: birthday_bot
+    build: .
+    volumes:
+      - .:/src
+    command: python birthday_bot/bot.py
+    restart: always
+    env_file:
+      - ".env"
