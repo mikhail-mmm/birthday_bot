@@ -1,10 +1,4 @@
-import os
-
-from dotenv import load_dotenv
-
-load_dotenv()
-
-API_TOKEN = os.getenv("API_TOKEN")
+API_TOKEN = "5912633727:AAG3e54m9_4jxRjFLGx0mKdHKh0nYWHlIYk"
 
 HELP = """
 Я бот для напоминания о Днях Рождения ваших родных и

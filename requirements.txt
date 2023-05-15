@@ -1,5 +1,4 @@
 attrs==22.2.0
--e git+ssh://git@github.com/mikhail-mmm/birthday_bot.git@891eb45eb4b823e958d174f1c62951fe5a62d6d6#egg=birthday_bot
 certifi==2022.12.7
 cfgv==3.3.1
 charset-normalizer==3.1.0

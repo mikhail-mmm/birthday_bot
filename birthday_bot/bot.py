@@ -23,16 +23,16 @@ from birthday_bot.utils.utils import (create_alert_date, create_alert_markup,
                                       is_str_date)
 
 logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO, filename="bot.log"
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO, filename="bot.log", filemode="w",
+    logger = logging.getLogger(__name__)
 )
-logger = logging.getLogger(__name__)
-
-bot = TeleBot(API_TOKEN)
 
 sentry_sdk.init(
     dsn="https://0364b814666c409aa2891de7f135e9a4@o4505036422971392.ingest.sentry.io/4505036504432640",
-    traces_sample_rate=1.0,
+    traces_sample_rate=0.85,
 )
+
+bot = TeleBot(API_TOKEN)
 
 
 @bot.message_handler(commands=["start"])
@@ -44,6 +44,7 @@ def start(message: Message) -> None:
             chat_id=message.chat.id,
         )
         insert_user(user)
+    a = 1 / 0
     main_markup = create_main_markup()
     bot.send_message(message.chat.id, 'Выберите что вам надо:', reply_markup=main_markup)
 
@@ -324,4 +325,4 @@ def main() -> None:
 if __name__ == "__main__":
     threading.Thread(target=main, name='bot_infinity_polling', daemon=True).start()
     threading.Thread(target=schedule_checker).start()
-    schedule.every().day.at("21:15").do(alert_today)
+    schedule.every().day.at("00:01").do(alert_today)
