@@ -1,4 +1,4 @@
-API_TOKEN = "5912633727:AAG3e54m9_4jxRjFLGx0mKdHKh0nYWHlIYk"
+API_TOKEN = ""
 
 HELP = """
 Я бот для напоминания о Днях Рождения ваших родных и
