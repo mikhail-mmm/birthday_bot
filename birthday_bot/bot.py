@@ -23,9 +23,10 @@ from birthday_bot.utils.utils import (create_alert_date, create_alert_markup,
                                       is_str_date)
 
 logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO, filename="bot.log", filemode="w",
-    logger = logging.getLogger(__name__)
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO,
+    filename="bot.log", filemode="w",
 )
+logger = logging.getLogger(__name__)
 
 sentry_sdk.init(
     dsn="https://0364b814666c409aa2891de7f135e9a4@o4505036422971392.ingest.sentry.io/4505036504432640",
@@ -44,7 +45,6 @@ def start(message: Message) -> None:
             chat_id=message.chat.id,
         )
         insert_user(user)
-    a = 1 / 0
     main_markup = create_main_markup()
     bot.send_message(message.chat.id, 'Выберите что вам надо:', reply_markup=main_markup)
 

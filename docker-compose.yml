@@ -1,7 +1,7 @@
 services:
 
   # test_bot_db:
-  #   container_name: test_bot_db
+  #   container_name: "test_bot_db"
   #   ports:
   #     - "5432:5432"
   #   environment:
@@ -11,16 +11,16 @@ services:
   #   image: postgres:15.2-alpine
 
   birthday_bot:
-    container_name: birthday_bot
+    container_name: "birthday_bot"
     build: .
     volumes:
       - .:/src/app
     command: python birthday_bot/bot.py
-    restart: always
+    restart: "always"
     network_mode: "host"
 
   bot_db:
-    container_name: bot_db
+    container_name: "bot_db"
     ports:
       - "5432:5432"
     environment:
@@ -28,4 +28,4 @@ services:
       - POSTGRES_USER=username
       - POSTGRES_DB=birthday_bot
     image: postgres:15.2-alpine
-    restart: always
+    restart: "always"
