@@ -7,6 +7,7 @@ from birthday_bot.db.utils_db import (
     insert_user, insert_event, get_event, get_coming_event, get_user_id,
     change_birthday_date, change_alert_date, change_alert_time, delete_event,
     get_events_with_alert_today, get_user, is_user_in_database, is_event_in_database,
+    change_event_alert_date_because_new_year,
 )
 from birthday_bot.db.models.user_and_event import Event
 from datetime import date, time
@@ -249,3 +250,39 @@ def test_is_event_in_database(get_db_session, user, event):
 
     assert event_exist_in_test_db == True
     assert event_not_exist_in_test_db == False
+
+
+def test_change_event_alert_date_because_new_year(get_db_session, user):
+    insert_test_user(get_db_session, user)
+    test_event_1 = Event(
+        birthday_human="test",
+        birthday_day=2,
+        birthday_month=2,
+        birthday_year=2000,
+        alert_date=date(date.today().year, 2, 2),
+        alert_time=time(10, 0),
+        user=user,
+    )
+    test_event_2 = Event(
+        birthday_human="test_2",
+        birthday_day=12,
+        birthday_month=12,
+        birthday_year=2000,
+        alert_date=date(date.today().year, 12, 12),
+        alert_time=time(15, 0),
+        user=user,
+    )
+    insert_test_event(get_db_session, test_event_1)
+    insert_test_event(get_db_session, test_event_2)
+
+    getting_user_id = get_user_id(user.chat_id)
+    change_event_alert_date_because_new_year()
+    changing_event = get_event(user_id=getting_user_id, birthday_human=test_event_1.birthday_human)
+    not_changing_event = get_event(user_id=getting_user_id, birthday_human=test_event_2.birthday_human)
+
+    delete_event_from_test_db(get_db_session, test_event_1)
+    delete_event_from_test_db(get_db_session, test_event_2)
+    delete_user_from_test_db(get_db_session, user)
+
+    assert changing_event.alert_date == date(2024, 2, 2)
+    assert not_changing_event.alert_date == date(2023, 12, 12)

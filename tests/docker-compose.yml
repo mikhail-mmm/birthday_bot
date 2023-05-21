@@ -1,0 +1,11 @@
+services:
+
+  test_bot_db:
+    container_name: "test_bot_db"
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=123321
+      - POSTGRES_USER=username
+      - POSTGRES_DB=test_birthday_bot
+    image: postgres:15.2-alpine

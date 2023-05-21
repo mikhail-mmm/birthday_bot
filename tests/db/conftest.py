@@ -90,17 +90,3 @@ def event(user):
         user=user,
     )
     return event
-
-
-# @pytest.fixture
-# def event_for_changing(user):
-#     event_for_changing = Event(
-#         birthday_human="test_name",
-#         birthday_day=2,
-#         birthday_month=2,
-#         birthday_year=1999,
-#         alert_date=date(1999, 2, 2),
-#         alert_time=time(10, 00),
-#         user=user,
-#     )
-#     return event_for_changing

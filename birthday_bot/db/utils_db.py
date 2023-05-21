@@ -1,4 +1,6 @@
-from datetime import date, time
+import pandas as pd
+
+from datetime import date, time, timedelta
 from sqlalchemy import select
 from typing import Optional
 
@@ -107,6 +109,14 @@ def get_user(id: int) -> Optional[User]:
     if user:
         return user
     return None
+
+
+def change_event_alert_date_because_new_year() -> None:
+    events = SESSION.query(Event).where(Event.alert_date < date.today()).all()
+    for event in events:
+        alert_date = event.alert_date
+        event.alert_date = alert_date + pd.offsets.DateOffset(years=1)
+        SESSION.commit()
 
 
 def is_user_in_database(chat_id: int) -> bool:

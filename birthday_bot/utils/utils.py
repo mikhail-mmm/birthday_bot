@@ -56,6 +56,15 @@ def is_str_date(input_date_str: str) -> bool:
         return False
 
 
+def is_str_date_without_year(input_date_str_with_unknown_year: str) -> bool:
+    date_str = input_date_str_with_unknown_year + "." + str(date.today().year)
+    try:
+        datetime.strptime(date_str, "%d.%m.%Y").date()
+        return True
+    except ValueError:
+        return False
+
+
 def create_alert_date(alert_str: str, birthday_day: int, birthday_month: int) -> date:
     if alert_str == "День в день":
         delta_date = 0
@@ -65,7 +74,10 @@ def create_alert_date(alert_str: str, birthday_day: int, birthday_month: int) ->
         delta_date = 3
     else:
         delta_date = 7
-    event_date = date(date.today().year, birthday_month, birthday_day)
+    if is_alert_date_next_year(birthday_day, birthday_month):
+        event_date = date((date.today().year + 1), birthday_month, birthday_day)
+    else:
+        event_date = date(date.today().year, birthday_month, birthday_day)
     alert_date = event_date - timedelta(days=delta_date)
     return alert_date
 
@@ -74,3 +86,16 @@ def create_alert_time(alert_time_str: str) -> time:
     hour, minute = alert_time_str.split(":")
     alert_time = time(int(hour), int(minute))
     return alert_time
+
+
+def is_alert_date_next_year(birthday_day: int, birthday_month: int) -> bool:
+    if date(date.today().year, birthday_month, birthday_day) <= date.today():
+        return True
+    return False
+
+
+def is_coming_new_year(date_today: date) -> bool:
+    yesterday = date_today - timedelta(days=1)
+    if date_today.year > yesterday.year:
+        return True
+    return False

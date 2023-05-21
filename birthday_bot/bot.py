@@ -1,10 +1,12 @@
 import logging
 import schedule
 import sentry_sdk
-from telebot import TeleBot
-from telebot.types import Message, ReplyKeyboardRemove
 import threading
 import time
+
+from datetime import date
+from telebot import TeleBot
+from telebot.types import Message, ReplyKeyboardRemove
 from typing import Type
 
 from birthday_bot.db.models.user_and_event import User
@@ -13,14 +15,15 @@ from birthday_bot.db.utils_db import (change_alert_date, change_alert_time,
                                       get_coming_event, get_event,
                                       get_events_with_alert_today, get_user,
                                       get_user_id, insert_event, insert_user,
-                                      is_event_in_database,
-                                      is_user_in_database)
+                                      is_event_in_database, is_user_in_database,
+                                      change_event_alert_date_because_new_year)
 from birthday_bot.utils.settings import API_TOKEN, HELP
 from birthday_bot.utils.utils import (create_alert_date, create_alert_markup,
                                       create_alert_time,
                                       create_change_event_markup,
                                       create_main_markup, create_time_markup,
-                                      is_str_date)
+                                      is_str_date, is_str_date_without_year,
+                                      is_coming_new_year)
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO,
@@ -70,8 +73,7 @@ def input_birthday_human(message: Message) -> None:
     birthday_human = message.text
     message = bot.send_message(
         message.chat.id,
-        """Введите дату рождения в формате <ДД.ММ.ГГГГ>
-        Если Вы не знаете год рождения, введите четыре нуля <ДД.ММ.0000>""",
+        "Введите дату рождения в формате <ДД.ММ.ГГГГ>. Если Вы не знаете год рождения, введите <ДД.ММ>",
     )
     bot.register_next_step_handler(message, input_birthday_human_date, birthday_human)
 
@@ -80,12 +82,12 @@ def input_birthday_human_date(message: Message, birthday_human: str) -> None:
     birthday_human_date = message.text
     alert_markup = create_alert_markup()
     main_markup = create_main_markup()
-    if is_str_date(birthday_human_date) is False:
-        bot.send_message(
-            message.chat.id,
-            "Неверный формат ввода даты! Используйте формат: <ДД.ММ.ГГГГ>",
-            reply_markup=main_markup,
-        )
+    if ((1 < len(birthday_human_date.split(".")) < 3) is False) and (is_str_date(birthday_human_date) is False) and ((is_str_date_without_year(birthday_human_date)) is False):
+            bot.send_message(
+                message.chat.id,
+                "Неверный формат ввода даты! Используйте формат: <ДД.ММ.ГГГГ>",
+                reply_markup=main_markup,
+            )
     else:
         bot.send_message(
             message.chat.id,
@@ -104,9 +106,17 @@ def input_alert_date(message: Message, birthday_human: str, birthday_human_date:
 
 def input_alert_time(message: Message, birthday_human: str, birthday_human_date: str, alert_date_str: str) -> None:
     alert_time_str = message.text
-    birthday_day, birthday_month, birthday_year = birthday_human_date.split(".")
+    if len(birthday_human_date.split(".")) == 3:
+        birthday_day, birthday_month, birthday_year = birthday_human_date.split(".")
+    else:
+        birthday_day, birthday_month = birthday_human_date.split(".")
+        birthday_year = "0"
     alert_date = create_alert_date(alert_date_str, int(birthday_day), int(birthday_month))
     alert_time = create_alert_time(alert_time_str)
+    bot.send_message(
+        message.chat.id,
+        alert_date,
+    )
     event = insert_event(
         message.chat.id, birthday_human, int(birthday_day),
         int(birthday_month), int(birthday_year), alert_date, alert_time,
@@ -308,6 +318,11 @@ def send_alert(chat_id: int, alert_message: str) -> Type[schedule.CancelJob]:
     return schedule.CancelJob
 
 
+def change_event_years() -> None:
+    if is_coming_new_year(date.today()):
+        change_event_alert_date_because_new_year()
+
+
 def schedule_checker() -> None:
     while True:
         schedule.run_pending()
@@ -325,4 +340,6 @@ def main() -> None:
 if __name__ == "__main__":
     threading.Thread(target=main, name='bot_infinity_polling', daemon=True).start()
     threading.Thread(target=schedule_checker).start()
-    schedule.every().day.at("00:01").do(alert_today)
+    schedule.every().day.at("00:01").do(change_event_years)
+    schedule.every().day.at("00:05").do(alert_today)
+
