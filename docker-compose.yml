@@ -1,5 +1,5 @@
+version: "3"
 services:
-
   birthday_bot:
     container_name: "birthday_bot"
     build: .
@@ -8,7 +8,6 @@ services:
     command: python birthday_bot/bot.py
     restart: "always"
     network_mode: "host"
-
   bot_db:
     container_name: "bot_db"
     ports:

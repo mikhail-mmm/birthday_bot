@@ -1,5 +1,3 @@
-import pandas as pd
-
 from datetime import date, time, timedelta
 from sqlalchemy import select
 from typing import Optional
@@ -115,7 +113,10 @@ def change_event_alert_date_because_new_year() -> None:
     events = SESSION.query(Event).where(Event.alert_date < date.today()).all()
     for event in events:
         alert_date = event.alert_date
-        event.alert_date = alert_date + pd.offsets.DateOffset(years=1)
+        if alert_date.month == 2 and alert_date.day == 29:
+            new_alert_date = alert_date - timedelta(days=1)
+        new_alert_date = alert_date.replace(year = alert_date.year + 1)
+        event.alert_date = new_alert_date
         SESSION.commit()
 
 
