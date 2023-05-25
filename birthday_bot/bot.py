@@ -113,10 +113,6 @@ def input_alert_time(message: Message, birthday_human: str, birthday_human_date:
         birthday_year = "0"
     alert_date = create_alert_date(alert_date_str, int(birthday_day), int(birthday_month))
     alert_time = create_alert_time(alert_time_str)
-    bot.send_message(
-        message.chat.id,
-        alert_date,
-    )
     event = insert_event(
         message.chat.id, birthday_human, int(birthday_day),
         int(birthday_month), int(birthday_year), alert_date, alert_time,
