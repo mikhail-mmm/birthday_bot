@@ -130,5 +130,5 @@ dmypy.json
 
 # Other
 .DS_Store
-utils/settings.py
 birthday_bot.egg-info/
+.handler-saves/

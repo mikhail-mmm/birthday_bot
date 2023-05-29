@@ -4,6 +4,7 @@ from typing import Optional
 
 from birthday_bot.db.db_creation import connect_db
 from birthday_bot.db.models.user_and_event import Event, User
+from birthday_bot.utils.utils import sorting_events
 
 DB, SESSION = connect_db()
 
@@ -48,8 +49,13 @@ def get_coming_event(chat_id: int) -> Optional[list[Event]]:
             coming_birthdays = 3
         else:
             coming_birthdays = amount_events
-        events = SESSION.query(Event).where(Event.user_id == user.id).order_by(Event.birthday_month).order_by(Event.birthday_day).limit(coming_birthdays).all()
-        return events
+        events = SESSION.query(Event).where(Event.user_id == user.id).order_by(Event.birthday_month).order_by(Event.birthday_day).all()
+        if events:
+            coming_event = sorting_events(events)
+        if len(coming_event) >= 3:
+            return coming_event[0:3]
+        else:
+            return coming_event[0:len(coming_event)]
     events = []
     return events
 

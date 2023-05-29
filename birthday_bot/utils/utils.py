@@ -2,6 +2,8 @@ from datetime import date, datetime, timedelta, time
 
 from telebot.types import ReplyKeyboardMarkup, KeyboardButton
 
+from birthday_bot.db.models.user_and_event import Event
+
 
 def create_main_markup() -> ReplyKeyboardMarkup:
     main_markup = ReplyKeyboardMarkup(resize_keyboard=True, selective=True)
@@ -99,3 +101,14 @@ def is_coming_new_year(date_today: date) -> bool:
     if date_today.year > yesterday.year:
         return True
     return False
+
+
+def sorting_events(events: list[Event]) -> list[Event]:
+    coming_events = []
+    for event in events:
+        if date(date.today().year, event.birthday_month, event.birthday_day) > date.today():
+            coming_events.append(event)
+    for event in events:
+        if date(date.today().year, event.birthday_month, event.birthday_day) <= date.today():
+            coming_events.append(event)
+    return coming_events

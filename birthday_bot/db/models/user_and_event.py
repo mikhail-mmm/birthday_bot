@@ -39,8 +39,12 @@ class Event(Base):
     alert_time = Column(Time, nullable=False)
 
     def str_birthday_date(self) -> str:
-        if self.birthday_month < 10:
+        if self.birthday_month < 10 and self.birthday_day < 10:
+            return f"0{self.birthday_day}.0{self.birthday_month}"
+        elif self.birthday_month < 10:
             return f"{self.birthday_day}.0{self.birthday_month}"
+        elif self.birthday_day < 10:
+            return f"0{self.birthday_day}.{self.birthday_month}"
         else:
             return f"{self.birthday_day}.{self.birthday_month}"
 
